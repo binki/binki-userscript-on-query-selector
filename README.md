@@ -24,7 +24,7 @@ binkiOnQuerySelector(selectors);
 
 Parameters:
 
-* `selectors` is a string of CSS selectors to query. Note that, sicne this is powered by mutatino events, it is inappropriate to use pseudo classes such as `:focus` which can change without the document being mutated.
+* `selectors` is a string of CSS selectors to query. Note that, since this is powered by mutation events, it is inappropriate to use pseudo classes such as `:focus` which can change without the document being mutated.
 
 Return: none.
 
