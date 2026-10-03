@@ -11,11 +11,9 @@ Include this in your userscript using [`@require`](https://wiki.greasespot.net/M
 // @require https://github.com/binki/binki-userscript-on-query-selector/raw/master/binki-userscript-on-query-selector.js
 // ==UserScript==
 
-(async () => {
-  binkiOnQuerySelector('a.btn-primary', button => {
-    button.click();
-  });
-})();
+binkiOnQuerySelector('a.btn-primary', button => {
+  button.click();
+});
 ```
 
 # API
