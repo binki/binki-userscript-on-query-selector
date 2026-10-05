@@ -18,18 +18,18 @@ const binkiBuildOnQuerySelector = element => {
       }
     }
   });
-  return (querySelector, handler) => {
+  return (selectors, handler) => {
     if (!byQuerySelector.size) observer.observe(element, {
       attributes: true,
       characterData: true,
       subtree: true,
       childList: true,
     });
-    const state = byQuerySelector.getOrInsertComputed(querySelector, () => ({
+    const state = byQuerySelector.getOrInsertComputed(selectors, () => ({
       handlers: [],
       sentElements: new WeakSet(),
     }));
-    for (const found of element.querySelectorAll(querySelector)) {
+    for (const found of element.selectorsAll(selectors)) {
       if (state.sentElements.has(found)) {
         // If other handlers already received this element, only send it to our new registrant.
         handler(found);
