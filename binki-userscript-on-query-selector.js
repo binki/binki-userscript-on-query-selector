@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Nathan Phillip Brink
 
 /**
- * Build an onQuerySelector() for a specific element.
+ * Build a binkiOnQuerySelector() for a specific element.
  */
 const binkiBuildOnQuerySelector = element => {
   const byQuerySelector = new Map();
