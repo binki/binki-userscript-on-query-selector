@@ -4,18 +4,38 @@
  * Build a binkiOnQuerySelector() for a specific element.
  */
 const binkiBuildOnQuerySelector = element => {
+  let handleNeeded = false;
   const byQuerySelector = new Map();
-  const observer = new MutationObserver(() => {
-    for (const [querySelector, state] of byQuerySelector) {
-      for (const found of element.querySelectorAll(querySelector)) {
-        if (!state.sentElements.has(found)) {
-          state.sentElements.add(found);
-          for (const handler of state.handlers) {
-            handler(found);
+  const handle = () => {
+    if (handleNeeded) {
+      for (const [querySelector, state] of byQuerySelector) {
+        for (const found of element.querySelectorAll(querySelector)) {
+          // Only send yet-unseen nodes to existing handlers.
+          if (!state.sentElements.has(found)) {
+            state.sentElements.add(found);
+            for (const handler of state.handlers) {
+              handler(found);
+            }
           }
+          // Send already-seen nodes to new handlers because they have not seen anything yet.
+          for (const newHandler of state.newHandlers) {
+            newHandler(found);
+          }
+        }
+        if (state.newHandlers.length) {
+          for (const newHandler of state.newHandlers) {
+            state.handlers.push(newHandler);
+          }
+          state.newHandlers = [];
         }
       }
     }
+    // In case if we have both a mutation event and newly added handlers, avoid the overhead of checking all the selectors again.
+    handleNeeded = false;
+  };
+  const observer = new MutationObserver(() => {
+    handleNeeded = true;
+    handle();
   });
   return (selectors, handler) => {
     if (typeof selectors !== 'string') throw new Error('Argument selectors must be a string.');
@@ -28,21 +48,15 @@ const binkiBuildOnQuerySelector = element => {
     });
     const state = byQuerySelector.getOrInsertComputed(selectors, () => ({
       handlers: [],
+      newHandlers: [],
       sentElements: new WeakSet(),
     }));
-    for (const found of element.selectorsAll(selectors)) {
-      if (state.sentElements.has(found)) {
-        // If other handlers already received this element, only send it to our new registrant.
-        handler(found);
-      } else {
-        // If other handlers haven’t already received this element, broadcast.
-        state.sentElements.add(found);
-        for (const handler of state.handlers) {
-          handler(found);
-        }
-      }
+    state.newHandlers.push(handler);
+    // Only append a call to handle if one has not yet been scheduled.
+    if (!handleNeeded) {
+      Promise.resolve().then(handle);
+      handleNeeded = true;
     }
-    state.handlers.push(handler);
   };
 };
 

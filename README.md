@@ -25,7 +25,7 @@ binkiOnQuerySelector(selectors, handler);
 Parameters:
 
 * `selectors` is a string of CSS selectors to query. Note that, since this is powered by mutation events, it is inappropriate to use pseudo classes such as `:focus` which can change without the document being mutated.
-* `handler` is a function with a single `element` parameter which is called for all existing elements matching the `selectors` and any newly added elements matching `selectors`.
+* `handler` is a function with a single `element` parameter which is asynchronously called for all existing elements matching the `selectors` and any newly added elements matching `selectors`.
 
 Return: none.
 
