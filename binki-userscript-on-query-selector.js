@@ -19,6 +19,8 @@ const binkiBuildOnQuerySelector = element => {
     }
   });
   return (selectors, handler) => {
+    if (typeof selectors !== 'string') throw new Error('Argument selectors must be a string.');
+    if (typeof handler !== 'function') throw new Error('Argument handler must be a function.');
     if (!byQuerySelector.size) observer.observe(element, {
       attributes: true,
       characterData: true,
