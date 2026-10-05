@@ -6,7 +6,6 @@
 const binkiBuildOnQuerySelector = element => {
   const byQuerySelector = new Map();
   const observer = new MutationObserver(() => {
-    console.log('handling mutation');
     for (const [querySelector, state] of byQuerySelector) {
       for (const found of element.querySelectorAll(querySelector)) {
         if (!state.sentElements.has(found)) {
