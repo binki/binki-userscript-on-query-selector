@@ -18,7 +18,7 @@ const binkiBuildOnQuerySelector = element => {
       }
     }
   });
-  return (querySelector, handleElement) => {
+  return (querySelector, handler) => {
     if (!byQuerySelector.size) observer.observe(element, {
       attributes: true,
       characterData: true,
@@ -32,7 +32,7 @@ const binkiBuildOnQuerySelector = element => {
     for (const found of element.querySelectorAll(querySelector)) {
       if (state.sentElements.has(found)) {
         // If other handlers already received this element, only send it to our new registrant.
-        handleElement(found);
+        handler(found);
       } else {
         // If other handlers haven’t already received this element, broadcast.
         state.sentElements.add(found);
@@ -41,7 +41,7 @@ const binkiBuildOnQuerySelector = element => {
         }
       }
     }
-    state.handlers.push(handleElement);
+    state.handlers.push(handler);
   };
 };
 
